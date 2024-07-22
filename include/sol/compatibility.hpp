@@ -71,11 +71,26 @@ inline lua_CFunction (lua_atpanic) (lua_State *L, lua_CFunction panicf) {
 
 inline int luaopen_package (lua_State *L) {
     // TODO
+    return 0;
 }
 
 inline int luaopen_io (lua_State *L) {
     // TODO
+    return 0;
 }
+
+inline int lua_dump (lua_State *L, lua_Writer writer, void *data) {
+    return -1;
+}
+
+#define luaL_dostring(L, s) \
+	(luaL_loadstring(L, s) || lua_pcall(L, 0, LUA_MULTRET, 0))
+
+inline int (luaL_loadstring) (lua_State *L, const char *s) {
+    return -1;
+    // return luaL_loadbuffer(L, s, strlen(s), s);
+}
+
 
 #define LUA_FILEHANDLE		"FILE*"
 
