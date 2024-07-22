@@ -475,7 +475,7 @@ COMPAT53_API int lua_load(lua_State* L, lua_Reader reader, void* data, const cha
 #ifndef SOL_LUAU
 	return lua_load(L, compat53_reader, &compat53_data, source);
 #else
-    return -1;
+    return -1; // TODO
 #endif
 #define lua_load COMPAT53_CONCAT(COMPAT53_PREFIX, _load_53)
 }
@@ -634,7 +634,15 @@ COMPAT53_API int luaL_loadbufferx(lua_State* L, const char* buff, size_t sz, con
 		return status;
 	return luaL_loadbuffer(L, buff, sz, name);
 #else
-    return -1;
+	// TODO only support text for now
+	int status = compat53_checkmode(L, mode, "text", LUA_ERRSYNTAX);
+	if (status != LUA_OK)
+		return status;
+	size_t bytecodeSize = 0;
+	char* bytecode = luau_compile(buff, sz, NULL, &bytecodeSize);
+	status = luau_load(L, name, bytecode, bytecodeSize, 0);
+	free(bytecode);
+	return status;
 #endif
 }
 
