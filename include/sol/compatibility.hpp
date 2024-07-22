@@ -91,6 +91,8 @@ inline int (luaL_loadstring) (lua_State *L, const char *s) {
     // return luaL_loadbuffer(L, s, strlen(s), s);
 }
 
+/* mark for precompiled code (`<esc>Lua') */
+#define	LUA_SIGNATURE	"\033Lua"
 
 #define LUA_FILEHANDLE		"FILE*"
 

@@ -351,10 +351,6 @@ namespace sol {
 			}
 			stack_aligned_protected_function pf(L, -1);
 			set_environment(env, pf);
-#ifdef SOL_LUAU
-            // why is error handler not popped?
-			lua_pop(L, 1);
-#endif
 			return pf();
 		}
 
@@ -364,6 +360,10 @@ namespace sol {
 				return protected_function_result(L, absolute_index(L, -1), 0, 1, static_cast<call_status>(x));
 			}
 			stack_aligned_protected_function pf(L, -1);
+#ifdef SOL_LUAU
+            // why is error handler not popped?
+			lua_pop(L, 2);
+#endif
 			return pf();
 		}
 

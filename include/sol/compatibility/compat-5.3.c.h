@@ -459,13 +459,8 @@ COMPAT53_API int lua_load(lua_State* L, lua_Reader reader, void* data, const cha
 	int status = LUA_OK;
 	compat53_reader_data compat53_data = { reader, data, 1, 0, 0 };
 	compat53_data.peeked_data = reader(L, data, &(compat53_data.peeked_data_size));
-#ifndef SOL_LUAU
 	if (compat53_data.peeked_data && compat53_data.peeked_data_size && compat53_data.peeked_data[0] == LUA_SIGNATURE[0]) /* binary file? */
 		status = compat53_checkmode(L, mode, "binary", LUA_ERRSYNTAX);
-#else
-    if (true)
-		status = compat53_checkmode(L, mode, "binary", LUA_ERRSYNTAX);
-#endif
 	else
 		status = compat53_checkmode(L, mode, "text", LUA_ERRSYNTAX);
 	if (status != LUA_OK)
@@ -475,7 +470,8 @@ COMPAT53_API int lua_load(lua_State* L, lua_Reader reader, void* data, const cha
 #ifndef SOL_LUAU
 	return lua_load(L, compat53_reader, &compat53_data, source);
 #else
-    return -1; // TODO
+	// TODO!
+	return -1;
 #endif
 #define lua_load COMPAT53_CONCAT(COMPAT53_PREFIX, _load_53)
 }
@@ -554,7 +550,6 @@ static int compat53_skipcomment(compat53_LoadF* lf, int* cp) {
 
 
 COMPAT53_API int luaL_loadfilex(lua_State* L, const char* filename, const char* mode) {
-#ifndef SOL_LUAU
 	compat53_LoadF lf;
 	int status, readstatus;
 	int c;
@@ -605,7 +600,20 @@ COMPAT53_API int luaL_loadfilex(lua_State* L, const char* filename, const char* 
 	}
 	if (c != EOF)
 		lf.buff[lf.n++] = (char)c; /* 'c' is the first character of the stream */
+#ifndef SOL_LUAU
 	status = lua_load(L, &compat53_getF, &lf, lua_tostring(L, -1), mode);
+#else
+	// read whole file
+	size_t len = fread(lf.buff, sizeof(char), COMPAT53_LUA_FILE_BUFFER_SIZE, lf.f);
+	lf.n = len;
+	// compile
+	size_t bytecodeSize;
+	char* bytecode = luau_compile(lf.buff, lf.n, NULL, &bytecodeSize);
+	// run
+	status = luau_load(L, filename, bytecode, bytecodeSize, 0);
+	// FIXME: ^ check error
+	free(bytecode);
+#endif
 	readstatus = ferror(lf.f);
 	if (filename)
 		fclose(lf.f); /* close file (even in case of errors) */
@@ -615,9 +623,6 @@ COMPAT53_API int luaL_loadfilex(lua_State* L, const char* filename, const char* 
 	}
 	lua_remove(L, fnameindex);
 	return status;
-#else
-    return -1;
-#endif
 }
 
 
