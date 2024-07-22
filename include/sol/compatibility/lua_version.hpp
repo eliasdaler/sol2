@@ -34,6 +34,10 @@
 	#include <lauxlib.h>
 #elif SOL_IS_ON(SOL_USE_LUA_HPP)
 	#include <lua.hpp>
+#elif defined(SOL_LUAU)
+	#include <lua.h>
+	#include <luacode.h>
+	#include <lualib.h>
 #else
 	extern "C" {
 		#include <lua.h>
@@ -84,6 +88,10 @@
 	#define SOL_USE_MOONJIT_I_ SOL_ON
 #else
 	#define SOL_USE_MOONJIT_I_ SOL_OFF
+#endif
+
+#if defined(SOL_LUAU)
+	#define LUA_VERSION_NUM 501
 #endif
 
 #if !defined(SOL_LUA_VERSION)

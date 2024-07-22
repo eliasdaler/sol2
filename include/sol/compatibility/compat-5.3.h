@@ -5,22 +5,18 @@
 #include <limits.h>
 #include <string.h>
 
-#ifndef SOL_LUAU
-
 #if defined(__cplusplus) && !defined(COMPAT53_LUA_CPP)
 extern "C" {
 #endif
 #include <lua.h>
+#ifndef SOL_LUAU
 #include <lauxlib.h>
+#else
+#include <luacode.h>
+#endif
 #include <lualib.h>
 #if defined(__cplusplus) && !defined(COMPAT53_LUA_CPP)
 }
-#endif
-
-#endif
-
-#ifdef SOL_LUAU
-#define LUA_VERSION_NUM 501
 #endif
 
 #ifndef COMPAT53_PREFIX

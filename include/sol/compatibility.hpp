@@ -29,12 +29,6 @@
 // but has been modified in many places for use with sol and luajit,
 // though the core abstractions remain the same
 
-// FIXME: put it somewhere else?
-#ifdef SOL_LUAU
-#include <lua.h>
-#include <luacode.h>
-#include <lualib.h>
-#endif
 
 #include <sol/version.hpp>
 #include <sol/compatibility/lua_version.hpp>
