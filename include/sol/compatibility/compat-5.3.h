@@ -4,7 +4,6 @@
 #include <stddef.h>
 #include <limits.h>
 #include <string.h>
-
 #if defined(__cplusplus) && !defined(COMPAT53_LUA_CPP)
 extern "C" {
 #endif
@@ -278,6 +277,7 @@ COMPAT53_API void luaL_pushresult(luaL_Buffer_53 *B);
 #endif
 
 #endif /* Lua 5.1 only */
+
 
 /* declarations for Lua 5.1 and 5.2 */
 #if defined(LUA_VERSION_NUM) && LUA_VERSION_NUM <= 502

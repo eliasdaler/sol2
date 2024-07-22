@@ -29,7 +29,6 @@
 // but has been modified in many places for use with sol and luajit,
 // though the core abstractions remain the same
 
-
 #include <sol/version.hpp>
 #include <sol/compatibility/lua_version.hpp>
 
