@@ -350,13 +350,21 @@ static int compat53_pushglobalfuncname(lua_State* L, lua_Debug* ar) {
 }
 
 static void compat53_pushfuncname(lua_State* L, lua_Debug* ar) {
+#ifndef SOL_LUAU
 	if (*ar->namewhat != '\0') /* is there a name? */
 		lua_pushfstring(L, "function " LUA_QS, ar->name);
+#else
+    if (false) { /* noop */ }
+#endif
 	else if (*ar->what == 'm') /* main? */
 		lua_pushliteral(L, "main chunk");
 	else if (*ar->what == 'C') {
 		if (compat53_pushglobalfuncname(L, ar)) {
+#ifndef SOL_LUAU
 			lua_pushfstring(L, "function " LUA_QS, lua_tostring(L, -1));
+#else
+			lua_pushfstring(L, "function %s", lua_tostring(L, -1));
+#endif
 			lua_remove(L, -2); /* remove name */
 		}
 		else
@@ -451,15 +459,24 @@ COMPAT53_API int lua_load(lua_State* L, lua_Reader reader, void* data, const cha
 	int status = LUA_OK;
 	compat53_reader_data compat53_data = { reader, data, 1, 0, 0 };
 	compat53_data.peeked_data = reader(L, data, &(compat53_data.peeked_data_size));
+#ifndef SOL_LUAU
 	if (compat53_data.peeked_data && compat53_data.peeked_data_size && compat53_data.peeked_data[0] == LUA_SIGNATURE[0]) /* binary file? */
 		status = compat53_checkmode(L, mode, "binary", LUA_ERRSYNTAX);
+#else
+    if (true)
+		status = compat53_checkmode(L, mode, "binary", LUA_ERRSYNTAX);
+#endif
 	else
 		status = compat53_checkmode(L, mode, "text", LUA_ERRSYNTAX);
 	if (status != LUA_OK)
 		return status;
 		/* we need to call the original 5.1 version of lua_load! */
 #undef lua_load
+#ifndef SOL_LUAU
 	return lua_load(L, compat53_reader, &compat53_data, source);
+#else
+    return -1;
+#endif
 #define lua_load COMPAT53_CONCAT(COMPAT53_PREFIX, _load_53)
 }
 
@@ -537,6 +554,7 @@ static int compat53_skipcomment(compat53_LoadF* lf, int* cp) {
 
 
 COMPAT53_API int luaL_loadfilex(lua_State* L, const char* filename, const char* mode) {
+#ifndef SOL_LUAU
 	compat53_LoadF lf;
 	int status, readstatus;
 	int c;
@@ -597,10 +615,14 @@ COMPAT53_API int luaL_loadfilex(lua_State* L, const char* filename, const char* 
 	}
 	lua_remove(L, fnameindex);
 	return status;
+#else
+    return -1;
+#endif
 }
 
 
 COMPAT53_API int luaL_loadbufferx(lua_State* L, const char* buff, size_t sz, const char* name, const char* mode) {
+#ifndef SOL_LUAU
 	int status = LUA_OK;
 	if (sz > 0 && buff[0] == LUA_SIGNATURE[0]) {
 		status = compat53_checkmode(L, mode, "binary", LUA_ERRSYNTAX);
@@ -611,6 +633,9 @@ COMPAT53_API int luaL_loadbufferx(lua_State* L, const char* buff, size_t sz, con
 	if (status != LUA_OK)
 		return status;
 	return luaL_loadbuffer(L, buff, sz, name);
+#else
+    return -1;
+#endif
 }
 
 
@@ -660,10 +685,16 @@ COMPAT53_API void luaL_buffinit(lua_State* L, luaL_Buffer_53* B) {
 	/* make it crash if used via pointer to a 5.1-style luaL_Buffer */
 	B->b.p = NULL;
 	B->b.L = NULL;
+#ifndef SOL_LUAU
 	B->b.lvl = 0;
+#endif
 	/* reuse the buffer from the 5.1-style luaL_Buffer though! */
 	B->ptr = B->b.buffer;
+#ifndef SOL_LUAU
 	B->capacity = LUAL_BUFFERSIZE;
+#else
+    B->capacity = 0;
+#endif
 	B->nelems = 0;
 	B->L2 = L;
 }

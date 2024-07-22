@@ -710,7 +710,9 @@ namespace sol {
 				return gc_mode::incremental;
 			}
 #else
+#ifndef SOL_LUAU
 			lua_gc(lua_state(), LUA_GCSETPAUSE, pause);
+#endif
 			lua_gc(lua_state(), LUA_GCSETSTEPMUL, step_multiplier);
 			(void)step_byte_size; // means nothing in older versions
 #endif

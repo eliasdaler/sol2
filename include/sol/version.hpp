@@ -26,6 +26,7 @@
 
 #include <sol/config.hpp>
 
+
 // clang-format off
 
 #define SOL_VERSION_MAJOR 3

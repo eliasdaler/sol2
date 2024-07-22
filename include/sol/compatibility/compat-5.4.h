@@ -5,7 +5,9 @@
 extern "C" {
 #endif
 #include <lua.h>
+#ifndef SOL_LUAU
 #include <lauxlib.h>
+#endif
 #include <lualib.h>
 #if defined(__cplusplus) && !defined(COMPAT53_LUA_CPP)
 }

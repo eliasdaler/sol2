@@ -8,10 +8,16 @@
 extern "C" {
 #endif
 #include <lua.h>
+#ifndef SOL_LUAU
 #include <lauxlib.h>
+#endif
 #include <lualib.h>
 #if defined(__cplusplus) && !defined(COMPAT53_LUA_CPP)
 }
+#endif
+
+#ifdef SOL_LUAU
+#define LUA_VERSION_NUM 501
 #endif
 
 #ifndef COMPAT53_PREFIX
@@ -25,9 +31,9 @@ extern "C" {
 #ifndef COMPAT53_API
 #  if defined(COMPAT53_INCLUDE_SOURCE) && COMPAT53_INCLUDE_SOURCE
 #    if defined(__GNUC__) || defined(__clang__)
-#      define COMPAT53_API __attribute__((__unused__)) static inline 
+#      define COMPAT53_API __attribute__((__unused__)) static inline
 #    else
-#      define COMPAT53_API static inline 
+#      define COMPAT53_API static inline
 #    endif /* Clang/GCC */
 #  else /* COMPAT53_INCLUDE_SOURCE */
 /* we are not including source, so everything is extern */
@@ -99,7 +105,7 @@ extern "C" {
 #  define LUA_ERRGCMM (LUA_ERRERR + 2)
 #endif /* LUA_ERRGCMM define */
 
-#if !defined(MOONJIT_VERSION)
+#if !defined(MOONJIT_VERSION) && !defined(SOL_LUAU)
 typedef size_t lua_Unsigned;
 #endif
 
@@ -274,8 +280,6 @@ COMPAT53_API void luaL_pushresult(luaL_Buffer_53 *B);
 
 #endif /* Lua 5.1 only */
 
-
-
 /* declarations for Lua 5.1 and 5.2 */
 #if defined(LUA_VERSION_NUM) && LUA_VERSION_NUM <= 502
 
@@ -414,11 +418,9 @@ COMPAT53_API void luaL_requiref(lua_State *L, const char *modname,
   static int (_name)(lua_State *L, int status, lua_KContext ctx)
 #endif
 
-
 #if defined(COMPAT53_INCLUDE_SOURCE) && COMPAT53_INCLUDE_SOURCE == 1
 #  include "compat-5.3.c.h"
 #endif
-
 
 #endif /* KEPLER_PROJECT_COMPAT53_H_ */
 

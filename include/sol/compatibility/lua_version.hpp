@@ -37,7 +37,9 @@
 #else
 	extern "C" {
 		#include <lua.h>
+#ifndef SOL_LUAU
 		#include <lauxlib.h>
+#endif
 		#include <lualib.h>
 	}
 #endif // C++ Mangling for Lua vs. Not

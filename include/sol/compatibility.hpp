@@ -32,6 +32,58 @@
 #include <sol/version.hpp>
 #include <sol/compatibility/lua_version.hpp>
 
+#if defined (SOL_LUAU)
+
+typedef const char * (*lua_Reader) (lua_State *L, void *ud, size_t *sz);
+typedef int (*lua_Writer) (lua_State *L, const void* p, size_t sz, void* ud);
+
+#define lua_pushcclosure(L, fn, n) \
+  (lua_pushcclosurek((L), (fn), NULL, (n), NULL))
+
+#define lua_pushcfunction(L, f) \
+   (lua_pushcclosurek((L), (f), NULL, 0, NULL))
+
+#define luaL_loadbuffer(L,s,sz,n)	luaL_loadbufferx(L,s,sz,n,NULL)
+
+#define lua_error(L) (lua_error(L), 0)
+#define luaL_error(L, fmt, ...) (luaL_errorL(L, fmt, ##__VA_ARGS__), 0)
+
+
+#define lua_getinfo(L, what, ar) \
+  (lua_getinfo((L), 1, what, (ar)))
+
+#define lua_getstack(L, level, ar) \
+  (lua_getinfo((L), "s", (ar)))
+
+#define LUA_ERRFILE     (LUA_ERRERR+1)
+
+inline int luaL_ref (lua_State *L, int t) {
+    return -1; // TODO
+}
+
+void luaL_unref (lua_State *L, int t, int ref) {
+    // TODO
+}
+
+inline lua_CFunction (lua_atpanic) (lua_State *L, lua_CFunction panicf) {
+    return NULL; // TODO
+}
+
+inline int luaopen_package (lua_State *L) {
+    // TODO
+}
+
+inline int luaopen_io (lua_State *L) {
+    // TODO
+}
+
+#define LUA_FILEHANDLE		"FILE*"
+
+// #define lua_getinfo(L, what, ar) \
+//   (lua_getinfo((L), 1, (what), (ar)))
+
+#endif // SOL_LUAU
+
 #if SOL_IS_ON(SOL_USE_COMPATIBILITY_LAYER)
 
 // clang-format off
