@@ -29,10 +29,17 @@
 // but has been modified in many places for use with sol and luajit,
 // though the core abstractions remain the same
 
+// FIXME: put it somewhere else?
+#ifdef SOL_LUAU
+#include <lua.h>
+#include <luacode.h>
+#include <lualib.h>
+#endif
+
 #include <sol/version.hpp>
 #include <sol/compatibility/lua_version.hpp>
 
-#if defined (SOL_LUAU)
+#ifdef SOL_LUAU
 
 typedef const char * (*lua_Reader) (lua_State *L, void *ud, size_t *sz);
 typedef int (*lua_Writer) (lua_State *L, const void* p, size_t sz, void* ud);

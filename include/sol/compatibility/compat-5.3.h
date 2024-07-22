@@ -4,19 +4,19 @@
 #include <stddef.h>
 #include <limits.h>
 #include <string.h>
+
+#ifndef SOL_LUAU
+
 #if defined(__cplusplus) && !defined(COMPAT53_LUA_CPP)
 extern "C" {
 #endif
 #include <lua.h>
-#ifndef SOL_LUAU
 #include <lauxlib.h>
-#else
-// #include <luacode.h>
-// #include <lualib.h>
-#endif
 #include <lualib.h>
 #if defined(__cplusplus) && !defined(COMPAT53_LUA_CPP)
 }
+#endif
+
 #endif
 
 #ifdef SOL_LUAU
