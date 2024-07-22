@@ -61,7 +61,7 @@ inline int luaL_ref (lua_State *L, int t) {
     return -1; // TODO
 }
 
-void luaL_unref (lua_State *L, int t, int ref) {
+inline void luaL_unref (lua_State *L, int t, int ref) {
     // TODO
 }
 

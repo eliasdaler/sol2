@@ -1,18 +1,18 @@
 # # # # sol2
 # The MIT License (MIT)
-# 
+#
 # Copyright (c) 2013-2022 Rapptz, ThePhD, and contributors
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
 # the Software without restriction, including without limitation the rights to
 # use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
 # the Software, and to permit persons to whom the Software is furnished to do so,
 # subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 # FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -91,6 +91,7 @@ file(GLOB_RECURSE sol2-sources
 	CONFIGURE_DEPENDS
 	${CMAKE_CURRENT_SOURCE_DIR}/source/**
 )
+
 
 # # # sol2 Library
 # # Add a target for sol2's library to be included by external users
@@ -175,7 +176,7 @@ else()
 endif()
 
 # # # Tests, Examples and other CI suites that come with sol2
-if (sol2-is-top-level-project)
+if (sol2-is-top-level-project OR TRUE)
 	# # # General project output locations
 	if (CMAKE_SIZEOF_VOID_P EQUAL 4)
 		set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/lib")
@@ -209,7 +210,7 @@ if (sol2-is-top-level-project)
 	check_compiler_flag(warn-pedantic GCC -Wpedantic)
 	check_compiler_flag(warn-all MSVC /W4 GCC -Wall)
 	check_compiler_flag(warn-extra GCC -Wextra)
-	check_compiler_flag(warn-errors MSVC /WX GCC -Werror)
+  # check_compiler_flag(warn-errors MSVC /WX GCC -Werror)
 	# Individual warnings/errors
 	check_compiler_diagnostic(unknown-warning)
 	check_compiler_diagnostic(unknown-warning-option)
@@ -246,7 +247,7 @@ if (sol2-is-top-level-project)
 			set(CREATE_LUALIB_TARGET TRUE)
 			find_package(LuaJIT REQUIRED)
 		else()
-			find_package(LuaBuild ${SOL2_LUA_VERSION} REQUIRED)
+      # find_package(LuaBuild ${SOL2_LUA_VERSION} REQUIRED)
 		endif()
 	endif()
 
@@ -268,7 +269,7 @@ if (sol2-is-top-level-project)
 		endforeach()
 		add_library(${lualib} ${lualibtype} IMPORTED)
 		set_target_properties(${lualib}
-			PROPERTIES 
+			PROPERTIES
 			INTERFACE_INCLUDE_DIRECTORIES ${LUA_INCLUDE_DIR}
 			INTERFACE_LINK_LIBRARIES "${LUA_SEARCH_DEPENDENCY_LIBS} ${CMAKE_DL_LIBS}"
 			IMPORTED_LINK_INTERFACE_LANGUAGES C
@@ -276,17 +277,19 @@ if (sol2-is-top-level-project)
 		set(LUA_LIBRARIES ${lualib})
 	endif()
 
+set(SOL2_USE_LUAU TRUE)
+
 	if (NOT LUA_FOUND AND NOT LUABUILD_FOUND)
-		message(FATAL_ERROR "sol2 Lua \"${SOL2_LUA_VERSION}\" not found and could not be targeted for building")
+    # message(FATAL_ERROR "sol2 Lua \"${SOL2_LUA_VERSION}\" not found and could not be targeted for building")
 	endif()
-	
+
 	# # Enable test harness for regular, example or single tests
 	if (SOL2_DO_TESTS OR (SOL2_TESTS_EXAMPLES AND SOL2_DO_EXAMPLES))
 		# enable ctest
 		message(STATUS "sol2 testing enabled...")
 		enable_testing()
 	endif()
-	
+
 	# # # Examples
 	# # Enable examples to be built against the library
 	if (SOL2_DO_EXAMPLES)
@@ -294,7 +297,7 @@ if (sol2-is-top-level-project)
 		message(STATUS "sol2 adding examples...")
 		add_subdirectory(examples)
 	endif()
-	
+
 	# # # Tests
 	# # Add tests here
 	if (SOL2_DO_TESTS)

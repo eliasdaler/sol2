@@ -18,6 +18,12 @@ extern "C" {
 }
 #endif
 
+#if defined(SOL_LUAU)
+	#define LUA_VERSION_NUM 501
+    #include <cstdio>
+    typedef const char * (*lua_Reader) (lua_State *L, void *ud, size_t *sz);
+#endif
+
 #ifndef COMPAT53_PREFIX
 /* we chose this name because many other lua bindings / libs have
 * their own compatibility layer, and that use the compat53 declaration
@@ -398,8 +404,6 @@ COMPAT53_API void luaL_requiref(lua_State *L, const char *modname,
 #endif
 
 #endif /* Lua 5.2 only */
-
-
 
 /* other Lua versions */
 #if !defined(LUA_VERSION_NUM) || LUA_VERSION_NUM < 501 || LUA_VERSION_NUM > 504
